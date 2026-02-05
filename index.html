@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What It Means to Be a Global Citizen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --accent-cyan: #00f5d4;
+            --accent-magenta: #f72585;
+            --accent-yellow: #fee440;
+            --accent-blue: #4361ee;
+            --text-light: #ffffff;
+            --text-muted: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .globe {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a3a5c, #0a1525);
+            box-shadow: 
+                inset -30px -30px 60px rgba(0, 245, 212, 0.1),
+                0 0 100px rgba(0, 245, 212, 0.2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.3;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .globe::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 245, 212, 0.3);
+            animation: rotate 20s linear infinite;
+        }
+
+        .globe::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            border-radius: 50%;
+            border: 1px solid rgba(247, 37, 133, 0.2);
+            animation: rotate 30s linear infinite reverse;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            50% { transform: translateY(-100vh) translateX(50px); }
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s;
+            z-index: 10;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide-content {
+            max-width: 1000px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-cyan) 50%, var(--accent-magenta) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            line-height: 1.8;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        .highlight {
+            color: var(--accent-yellow);
+            font-weight: 600;
+        }
+
+        .accent-cyan { color: var(--accent-cyan); }
+        .accent-magenta { color: var(--accent-magenta); }
+        .accent-blue { color: var(--accent-blue); }
+        .accent-yellow { color: var(--accent-yellow); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .icon-grid {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .icon-circle.cyan {
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.2), rgba(0, 245, 212, 0.05));
+            border: 2px solid var(--accent-cyan);
+        }
+
+        .icon-circle.magenta {
+            background: linear-gradient(135deg, rgba(247, 37, 133, 0.2), rgba(247, 37, 133, 0.05));
+            border: 2px solid var(--accent-magenta);
+        }
+
+        .icon-circle.yellow {
+            background: linear-gradient(135deg, rgba(254, 228, 64, 0.2), rgba(254, 228, 64, 0.05));
+            border: 2px solid var(--accent-yellow);
+        }
+
+        .icon-circle.blue {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(67, 97, 238, 0.05));
+            border: 2px solid var(--accent-blue);
+        }
+
+        .icon-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quote {
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--text-light);
+            position: relative;
+            padding: 0 40px;
+            margin-top: 40px;
+        }
+
+        .quote::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: -20px;
+            font-size: 5rem;
+            color: var(--accent-magenta);
+            opacity: 0.5;
+            font-family: Georgia, serif;
+        }
+
+        .quote-author {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: var(--accent-cyan);
+            margin-top: 20px;
+        }
+
+        .action-list {
+            list-style: none;
+            text-align: left;
+            max-width: 600px;
+            margin: 40px auto 0;
+        }
+
+        .action-list li {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-muted);
+        }
+
+        .action-list .bullet {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .progress-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 18px 45px;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--bg-dark);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0, 245, 212, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .icon-grid {
+                gap: 30px;
+            }
+            .slide {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <div class="bg-animation">
+            <div class="globe"></div>
+            <div class="particles" id="particles"></div>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active" data-duration="6">
+            <div class="slide-content">
+                <span class="subtitle">A Journey Beyond Borders</span>
+                <h1>What It Means to Be a Global Citizen</h1>
+                <p>In a world more connected than ever, your actions ripple across continents. <span class="highlight">You are already part of something bigger.</span></p>
+            </div>
+        </div>
+
+        <!-- Slide 2: The Connected World -->
+        <div class="slide" data-duration="7">
+            <div class="slide-content">
+                <span class="subtitle">The Reality</span>
+                <h2>We Live in <span class="accent-cyan">One World</span></h2>
+                <p>Every day, billions of people share the same planet, breathe the same air, and face the same challenges.</p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">8B+</div>
+                        <div class="stat-label">People Sharing Earth</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">195</div>
+                        <div class="stat-label">Countries Connected</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">7000+</div>
+                        <div class="stat-label">Languages Spoken</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Definition -->
+        <div class="slide" data-duration="7">
+            <div class="slide-content">
+                <span class="subtitle">The Definition</span>
+                <h2>So What IS a <span class="accent-magenta">Global Citizen?</span></h2>
+                <p>Someone who identifies with being part of a worldwide community. <span class="highlight">What happens thousands of miles away matters to you.</span></p>
+                <div class="icon-grid">
+                    <div class="icon-item">
+                        <div class="icon-circle cyan">🌍</div>
+                        <span class="icon-label">Awareness</span>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon-circle magenta">🤝</div>
+                        <span class="icon-label">Empathy</span>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon-circle yellow">⚡</div>
+                        <span class="icon-label">Action</span>
+                    </div>
+                    <div class="icon-item">
+                        <div class="icon-circle blue">🔄</div>
+                        <span class="icon-label">Responsibility</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Why It Matters -->
+        <div class="slide" data-duration="8">
+            <div class="slide-content">
+                <span class="subtitle">The Why</span>
+                <h2>Why Should <span class="accent-yellow">You Care?</span></h2>
+                <p>The biggest challenges don't respect borders. <span class="highlight">Your generation will inherit these problems.</span> But you'll also have the power to solve them.</p>
+                <div class="quote">
+                    "No one is born a good citizen; no nation is born a democracy. Rather, both are processes that continue to evolve over a lifetime."
+                    <div class="quote-author">— Kofi Annan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: The Pillars -->
+        <div class="slide" data-duration="7">
+            <div class="slide-content">
+                <span class="subtitle">The Foundation</span>
+                <h2>The <span class="accent-blue">Four Pillars</span></h2>
+                <ul class="action-list">
+                    <li><span class="bullet" style="background: var(--accent-cyan);"></span><strong style="color: var(--accent-cyan);">Learn</strong> — Understand global issues and perspectives</li>
+                    <li><span class="bullet" style="background: var(--accent-magenta);"></span><strong style="color: var(--accent-magenta);">Connect</strong> — Build relationships across cultures</li>
+                    <li><span class="bullet" style="background: var(--accent-yellow);"></span><strong style="color: var(--accent-yellow);">Reflect</strong> — Examine your own biases</li>
+                    <li><span class="bullet" style="background: var(--accent-blue);"></span><strong style="color: var(--accent-blue);">Act</strong> — Take meaningful action</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Taking Action -->
+        <div class="slide" data-duration="8">
+            <div class="slide-content">
+                <span class="subtitle">The Action</span>
+                <h2>What Can <span class="accent-cyan">YOU</span> Do?</h2>
+                <ul class="action-list">
+                    <li><span class="bullet" style="background: var(--accent-cyan);"></span>Follow international news</li>
+                    <li><span class="bullet" style="background: var(--accent-magenta);"></span>Learn about different cultures</li>
+                    <li><span class="bullet" style="background: var(--accent-yellow);"></span>Support ethical brands</li>
+                    <li><span class="bullet" style="background: var(--accent-blue);"></span>Volunteer for causes that matter</li>
+                    <li><span class="bullet" style="background: var(--accent-cyan);"></span>Use your voice on social media</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: The Digital Age -->
+        <div class="slide" data-duration="7">
+            <div class="slide-content">
+                <span class="subtitle">Your Advantage</span>
+                <h2>You're the First <span class="accent-magenta">Truly Global</span> Generation</h2>
+                <p><span class="highlight">The internet made you global citizens by default.</span> Will you be passive or active?</p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">5B+</div>
+                        <div class="stat-label">Internet Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4.9B</div>
+                        <div class="stat-label">Social Media Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Potential Connections</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Closing -->
+        <div class="slide" data-duration="6">
+            <div class="slide-content">
+                <span class="subtitle">The Challenge</span>
+                <h1>The World Needs <span class="accent-cyan">You</span></h1>
+                <p>Choose to see beyond your own experience. Believe that <span class="highlight">your actions can change the world.</span></p>
+                <p style="margin-top: 20px;">Because they can. <span class="accent-magenta">And they will.</span></p>
+                <button class="cta-button" onclick="restart()">Watch Again</button>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progress"></div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        // Create particles
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#00f5d4', '#f72585', '#fee440', '#4361ee'];
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(particle);
+            }
+        })();
+
+        // Create progress dots
+        (function createProgressDots() {
+            const container = document.getElementById('progress');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+                container.appendChild(dot);
+            }
+        })();
+
+        function updateProgress() {
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            updateProgress();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+                scheduleNext();
+            }
+        }
+
+        function scheduleNext() {
+            const duration = parseInt(slides[currentSlide].dataset.duration) * 1000;
+            setTimeout(nextSlide, duration);
+        }
+
+        function restart() {
+            currentSlide = 0;
+            showSlide(0);
+            scheduleNext();
+        }
+
+        // Start autoplay immediately
+        scheduleNext();
+    </script>
+</body>
+</html>
